@@ -26,10 +26,10 @@ module Base where
   root (p ∙ f) = root p
 
   -- TODO: add default
-  _⟨_⟩ : Ctx → path → α × β
+  _⟨_⟩ : Ctx → path → αβ
   [] ⟨ p ⟩ = {!   !}
   (record { δ-p = δ-p ; δ-α = δ-α ; δ-β = δ-β } ∷ Δ) ⟨ p ⟩ with p == δ-p
-  ... | true = δ-α ,′ δ-β
+  ... | true = δ-α , δ-β
   ... | false = Δ ⟨ p ⟩
 
   _∖_ : Ctx → path → Ctx
