@@ -77,6 +77,7 @@ module Grammar where
     call-s : kt-method-name → List path → stmt
 
   record δ : Set where
+    constructor _∶_*_
     field
       δ-p : path
       δ-α : α

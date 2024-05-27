@@ -1,3 +1,4 @@
+{-# OPTIONS --allow-unsolved-metas #-}
 open import Agda.Builtin.List
 open import Agda.Builtin.Equality
 open import Agda.Builtin.Bool
