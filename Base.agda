@@ -1,11 +1,11 @@
 open import Agda.Builtin.List
 open import Agda.Builtin.Equality
 open import Agda.Builtin.Bool
-open import grammar
+open import Grammar
 open import Relation.Nullary
 open import Data.Product
 
-module base where
+module Base where
   data _∉_ : path → Ctx → Set where
     ∉-base : (p : path) → p ∉ []
     ∉-rec  : {p : path} {d : δ} {Δ : Ctx} → 

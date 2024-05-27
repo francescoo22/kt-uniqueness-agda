@@ -7,7 +7,7 @@ open import Data.Bool.Base using (_∧_)
 open import Agda.Builtin.Equality using (_≡_)
 import Data.String.Properties as Str
 
-module grammar where
+module Grammar where
   data α-f : Set where
     unique-f : α-f
     shared-f : α-f
