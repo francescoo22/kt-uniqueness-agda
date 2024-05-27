@@ -63,6 +63,7 @@ module Grammar where
     var : kt-var-name → path
     _∙_ : path → kt-property-name → path
 
+  -- TODO: remove and use ≡-?
   _==_ : path → path → Bool
   var (var-name x) == var (var-name y) = x Str.== y
   var x == (p₂ ∙ x₁) = false
