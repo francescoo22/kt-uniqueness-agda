@@ -1,6 +1,11 @@
 open import Agda.Builtin.List
 open import Agda.Builtin.String
--- open import Agda.Builtin.Equality
+open import Agda.Builtin.Bool
+open import Data.Bool.Base using (_∧_)
+-- open import Relation.Nullary.Decidable using (⌊_⌋)
+-- open import Relation.Binary using (Decidable)
+open import Agda.Builtin.Equality using (_≡_)
+import Data.String.Properties as Str
 
 module grammar where
   data α-f : Set where
@@ -54,6 +59,12 @@ module grammar where
     var : kt-var-name → path
     _∙_ : path → kt-property-name → path
 
+  _==_ : path → path → Bool
+  var (var-name x) == var (var-name y) = x Str.== y
+  var x == (p₂ ∙ x₁) = false
+  (p₁ ∙ f) == var x = false
+  (p₁ ∙ property-name x) == (p₂ ∙ property-name y) = (p₁ == p₂) ∧ (x Str.== y)
+
   data exp : Set where
     null : exp
     path-e : path → exp
@@ -71,4 +82,4 @@ module grammar where
       δ-α : α
       δ-β : β
 
-  Δ = List δ
+  Ctx = List δ
