@@ -1,10 +1,11 @@
+{-# OPTIONS --allow-unsolved-metas #-}
 open import Agda.Builtin.List
 open import Agda.Builtin.String
 open import Agda.Builtin.Bool
 open import Data.Bool.Base using (_∧_)
--- open import Relation.Nullary.Decidable using (⌊_⌋)
--- open import Relation.Binary using (Decidable)
-open import Agda.Builtin.Equality using (_≡_)
+open import Relation.Nullary
+open import Relation.Nullary.Decidable.Core
+open import Agda.Builtin.Equality using (_≡_; refl)
 import Data.String.Properties as Str
 open import Data.Product using (_×_)
 
@@ -67,6 +68,9 @@ module Grammar where
   var x == (p₂ ∙ x₁) = false
   (p₁ ∙ f) == var x = false
   (p₁ ∙ property-name x) == (p₂ ∙ property-name y) = (p₁ == p₂) ∧ (x Str.== y)
+
+  ≡-? : (p₁ p₂ : path) → Dec (p₁ ≡ p₂)
+  ≡-? p₁ p₂ = {!   !} -- TODO
 
   data exp : Set where
     null   : exp
