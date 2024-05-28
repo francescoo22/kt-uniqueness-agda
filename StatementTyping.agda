@@ -3,10 +3,11 @@ open import SubPaths
 open import Paths
 open import Agda.Builtin.List
 open import Agda.Builtin.Equality
+open import Data.List.Base using (_++_)
 open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_ ; _,_)
 
-module StatementTyping where
+module StatementTyping (m-type : kt-method-name → (List (α-f × β)) × α-f) where
   data _⊢_⊣_ : Ctx → Stmt → Ctx → Set where
     t-decl : (Δ : Ctx) → (x : kt-var-name) → Δ ⊢ decl x ⊣ ((var x ∶ ⊤ * ∘) ∷ Δ)
     
@@ -22,17 +23,13 @@ module StatementTyping where
     t-assign-unique : {p p' : Path} {Δ Δ' : Ctx} →
                       ¬ (p' ⊑ p) →
                       (Δ ⟦ p' ⟧) ≡ (unique , ∘) →
-                      Δ [ p' ↦ ⊤ , ∘ ] [ p ↦ unique , ∘ ] ≡ Δ' →
-                      -- TODO: subpaths replacing
-                      Δ ⊢ p := pathₑ p' ⊣ Δ'
+                      Δ ⊢ p := pathₑ p' ⊣ (Δ [ p' ↦ ⊤ , ∘ ] [ p ↦ unique , ∘ ] ++ sub-paths-replaced Δ p' p)
 
     t-assign-shared : {p p' : Path} {Δ Δ' : Ctx} {αₚ : α} →
                       ¬ (p' ⊑ p) →
                       (Δ ⟦ p ⟧) ≡ (αₚ , ∘) →
                       (Δ ⟦ p' ⟧) ≡ (shared , ∘) →
-                      Δ [ p ↦ shared , ∘ ] ≡ Δ' →
-                      -- TODO: subpaths replacing
-                      Δ ⊢ p := pathₑ p' ⊣ Δ'
+                      Δ ⊢ p := pathₑ p' ⊣ (Δ [ p ↦ shared , ∘ ] ++ sub-paths-replaced Δ p' p)
 
     -- TODO: if after defining unification
     -- TODO: assign-borrowed-field after deciding how it works

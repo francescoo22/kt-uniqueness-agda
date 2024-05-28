@@ -86,8 +86,8 @@ module Grammar where
 
   data exp : Set where
     null   : exp
-    pathₑ : Path → exp
-    callₑ : kt-method-name → List Path → exp
+    pathₑ  : Path → exp
+    callₑ  : kt-method-name → List Path → exp
 
   data Stmt : Set where
     decl             : kt-var-name → Stmt

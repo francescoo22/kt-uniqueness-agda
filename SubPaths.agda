@@ -47,8 +47,19 @@ module SubPaths where
   diff (⊏-base _ f) = f ∷ []
   diff (⊏-rec f p⊏p₁) = diff p⊏p₁ ∷ʳ f
 
+  _＠_ : Path → List kt-property-name → Path
+  p ＠ [] = p
+  p ＠ (f ∷ fs) = (p ∙ f) ＠ fs
+
   sub-paths : Ctx → Path → List δ
   sub-paths [] p = []       
   sub-paths ((p' ∶ δ-α * δ-β) ∷ Δ) p with p ⊏-? p'
   ... | yes p⊏p' = (p' ∶ δ-α * δ-β) ∷ sub-paths Δ p
   ... | no ¬p⊏p' = sub-paths Δ p
+
+  -- sub-paths-replaced Δ p new-p relpaces p with new-p in subpaths p
+  sub-paths-replaced : Ctx → Path → Path → Ctx
+  sub-paths-replaced [] p new-p = [] 
+  sub-paths-replaced ((p' ∶ δ-α * δ-β) ∷ Δ) p new-p with p ⊏-? p'
+  ... | yes p⊏p' = ((new-p ＠ diff p⊏p') ∶ δ-α * δ-β) ∷  sub-paths-replaced Δ p new-p
+  ... | no ¬p⊏p' = sub-paths-replaced Δ p new-p
