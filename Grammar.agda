@@ -59,35 +59,35 @@ module Grammar where
       args   : List kt-argument
       return : α-f
 
-  data path : Set where
-    var : kt-var-name → path
-    _∙_ : path → kt-property-name → path
+  data Path : Set where
+    var : kt-var-name → Path
+    _∙_ : Path → kt-property-name → Path
 
   -- TODO: remove and use ≡-?
-  _==_ : path → path → Bool
+  _==_ : Path → Path → Bool
   var (var-name x) == var (var-name y) = x Str.== y
   var x == (p₂ ∙ x₁) = false
   (p₁ ∙ f) == var x = false
   (p₁ ∙ property-name x) == (p₂ ∙ property-name y) = (p₁ == p₂) ∧ (x Str.== y)
 
-  ≡-? : (p₁ p₂ : path) → Dec (p₁ ≡ p₂)
+  ≡-? : (p₁ p₂ : Path) → Dec (p₁ ≡ p₂)
   ≡-? p₁ p₂ = {!   !} -- TODO
 
   data exp : Set where
     null   : exp
-    path-e : path → exp
-    call-e : kt-method-name → List path → exp
+    path-e : Path → exp
+    call-e : kt-method-name → List Path → exp
 
   data stmt : Set where
     decl             : kt-var-name → stmt
-    assign           : (lh : path) → (rh : exp) → stmt
-    if_==_then_else_ : path → path → List stmt → List stmt → stmt
-    call-s           : kt-method-name → List path → stmt
+    assign           : (lh : Path) → (rh : exp) → stmt
+    if_==_then_else_ : Path → Path → List stmt → List stmt → stmt
+    call-s           : kt-method-name → List Path → stmt
 
   record δ : Set where
     constructor _∶_*_
     field
-      δ-p : path
+      δ-p : Path
       δ-α : α
       δ-β : β
 
