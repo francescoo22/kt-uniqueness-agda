@@ -1,4 +1,3 @@
-{-# OPTIONS --allow-unsolved-metas #-}
 open import Agda.Builtin.List
 open import Agda.Builtin.Equality
 open import Agda.Builtin.Bool
@@ -27,9 +26,12 @@ module Base where
   root (var x) = var x
   root (p ∙ f) = root p
 
+  -- information known by the compiler, not relevant to be defined here
+  postulate default-annotation : Path → kt-property-name → α-f
+
   _⟨_⟩ : Ctx → Path → αβ
   [] ⟨ var x ⟩ = ⊤ , ∘ -- Note: this case cannot happen in a well typed kt program, for now it is ok to leave it as it is
-  [] ⟨ p ∙ x ⟩ = {!   !} -- TODO: add default
+  [] ⟨ p ∙ f ⟩ = αf→α (default-annotation p f) , ∘
   (record { δ-p = δ-p ; δ-α = δ-α ; δ-β = δ-β } ∷ Δ) ⟨ p ⟩ with p ≡-? δ-p
   ... | yes _ = δ-α , δ-β
   ... | no _ = Δ ⟨ p ⟩
