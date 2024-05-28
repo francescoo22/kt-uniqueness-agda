@@ -15,7 +15,7 @@ module Paths where
   data std : Ctx → Path → αβ → Set where
     std-empty : (p : Path) → (r : αβ) → std [] p r
     std-rec-1 : {p p' : Path} → (r : αβ) → (Δ : Ctx) → ¬ (p ⊏ p') → std Δ p r
-    std-rec-2 : {p p' : Path} → {a a' : α} → {b b' : β} → {Δ : Ctx} →
+    std-rec-2 : {p p' : Path} {a a' : α} {b b' : β} {Δ : Ctx} →
                 (p ⊏ p') →
                 ((a' , b') ≼ (((root p ∶ a * b) ∷ []) ⟦ p' ⟧)) →
                 (std Δ p (a , b)) →

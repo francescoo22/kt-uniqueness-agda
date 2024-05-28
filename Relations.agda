@@ -30,7 +30,7 @@ module Relations where
   ∘ ⊔-β ∘ = ∘
   ♭ ⊔-β ∘ = ♭
 
-  -- NOTE: Here also a ⊤ ♭ may exists, but it should be the same
+  -- NOTE: Here also a ⊤ ♭ may exists, but it should be ok
   _⊔_ : αβ → αβ → αβ
   (a , b) ⊔ (a₁ , b₁) = (a ⊔-α a₁) , (b ⊔-β b₁)
 

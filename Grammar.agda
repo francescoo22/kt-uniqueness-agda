@@ -86,14 +86,15 @@ module Grammar where
 
   data exp : Set where
     null   : exp
-    path-e : Path → exp
-    call-e : kt-method-name → List Path → exp
+    pathₑ : Path → exp
+    callₑ : kt-method-name → List Path → exp
 
-  data stmt : Set where
-    decl             : kt-var-name → stmt
-    assign           : (lh : Path) → (rh : exp) → stmt
-    if_==_then_else_ : Path → Path → List stmt → List stmt → stmt
-    call-s           : kt-method-name → List Path → stmt
+  data Stmt : Set where
+    decl             : kt-var-name → Stmt
+    _:=_             : (lh : Path) → (rh : exp) → Stmt
+    if_==_then_else_ : Path → Path → List Stmt → List Stmt → Stmt
+    callₛ            : kt-method-name → List Path → Stmt
+    seq              : List Stmt → Stmt
 
   record δ : Set where
     constructor _∶_*_
