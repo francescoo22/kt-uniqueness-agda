@@ -17,7 +17,9 @@ module SubPaths where
   p₁ ⊏-? (var x) = no λ ()
   p₁ ⊏-? (p₂ ∙ f) with p₁ ⊏-? p₂
   ... | yes p₁⊏p₂ = yes (⊏-rec p₁ p₂ f p₁⊏p₂)
-  ... | no p = {!  !} -- TODO
+  ... | no ¬p₁⊏p₂ with p₁ ≡-? p₂
+  ... | yes p₁≡p₂ = yes {!   !}
+  ... | no ¬p₁≡p₂ = no λ sub → {!   !}
 
   data _⊑_ : Path → Path → Set where
     less : {p₁ p₂ : Path} → p₁ ⊏ p₂ → p₁ ⊑ p₂
@@ -40,6 +42,8 @@ module SubPaths where
   Δ [ p ↦ αₚ , βₚ ] with Δ ∖ p
   ... | Δ' = (p ∶ αₚ * βₚ) ∷ Δ'
 
-  sub-paths : Ctx → Path → List Path
+  sub-paths : Ctx → Path → List δ
   sub-paths [] p = []       
-  sub-paths ((δ-p ∶ δ-α * δ-β) ∷ Δ) p = {!   !} -- TODO
+  sub-paths ((p' ∶ δ-α * δ-β) ∷ Δ) p with p ⊏-? p'
+  ... | yes p⊏p' = (p' ∶ δ-α * δ-β) ∷ sub-paths Δ p
+  ... | no ¬p⊏p' = sub-paths Δ p

@@ -102,5 +102,6 @@ module Grammar where
       δ-α : α
       δ-β : β
 
+  -- TODO valid by construction (List δ → Set where mk : xs → valid xs)
   Ctx = List δ
  
