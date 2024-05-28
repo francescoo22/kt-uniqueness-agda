@@ -8,6 +8,10 @@ open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_ ; _,_)
 
 module StatementTyping (m-type : kt-method-name → (List (α-f × β)) × α-f) where
+  m-ret-type : kt-method-name → α-f
+  m-ret-type m with m-type m
+  ... | fst , snd = snd
+
   data _⊢_⊣_ : Ctx → Stmt → Ctx → Set where
     t-decl : (Δ : Ctx) → (x : kt-var-name) → Δ ⊢ decl x ⊣ ((var x ∶ ⊤ * ∘) ∷ Δ)
     
@@ -30,6 +34,10 @@ module StatementTyping (m-type : kt-method-name → (List (α-f × β)) × α-f)
                       (Δ ⟦ p ⟧) ≡ (αₚ , ∘) →
                       (Δ ⟦ p' ⟧) ≡ (shared , ∘) →
                       Δ ⊢ p := pathₑ p' ⊣ (Δ [ p ↦ shared , ∘ ] ++ sub-paths-replaced Δ p' p)
+
+    t-assign-call : {Δ Δ₁ Δ' : Ctx} {p : Path} {m : kt-method-name} {args : List Path} →
+                    Δ ⊢ callₛ m args ⊣ Δ' →
+                    Δ ⊢ p := callₑ m args ⊣ (Δ' [ p ↦ αf→α (m-ret-type m) , ∘ ])
 
     -- TODO: if after defining unification
     -- TODO: assign-borrowed-field after deciding how it works

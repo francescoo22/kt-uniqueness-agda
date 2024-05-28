@@ -19,6 +19,10 @@ module Grammar where
     shared : α
     ⊤ : α
 
+  αf→α : α-f → α
+  αf→α unique-f = unique
+  αf→α shared-f = shared
+
   data β : Set where
     ♭ : β
     ∘ : β
