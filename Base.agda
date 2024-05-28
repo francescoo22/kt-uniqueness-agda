@@ -3,7 +3,8 @@ open import Agda.Builtin.List
 open import Agda.Builtin.Equality
 open import Agda.Builtin.Bool
 open import Grammar
-open import Relation.Nullary using (¬_)
+open import Relation.Nullary
+open import Relation.Nullary.Decidable.Core
 open import Data.Product using (_×_ ; _,_)
 
 module Base where
@@ -29,13 +30,13 @@ module Base where
   -- TODO: add default
   _⟨_⟩ : Ctx → Path → αβ
   [] ⟨ p ⟩ = {!   !}
-  (record { δ-p = δ-p ; δ-α = δ-α ; δ-β = δ-β } ∷ Δ) ⟨ p ⟩ with p == δ-p
-  ... | true = δ-α , δ-β
-  ... | false = Δ ⟨ p ⟩
+  (record { δ-p = δ-p ; δ-α = δ-α ; δ-β = δ-β } ∷ Δ) ⟨ p ⟩ with p ≡-? δ-p
+  ... | yes _ = δ-α , δ-β
+  ... | no _ = Δ ⟨ p ⟩
 
   _∖_ : Ctx → Path → Ctx
   [] ∖ p = []
-  (record { δ-p = δ-p ; δ-α = δ-α ; δ-β = δ-β } ∷ Δ) ∖ p with p == δ-p
-  ... | true = Δ
-  ... | false = Δ ∖ p
+  (record { δ-p = δ-p ; δ-α = δ-α ; δ-β = δ-β } ∷ Δ) ∖ p with p ≡-? δ-p
+  ... | yes _ = Δ
+  ... | no _ = Δ ∖ p
  

@@ -1,4 +1,3 @@
-{-# OPTIONS --allow-unsolved-metas #-}
 open import Agda.Builtin.List
 open import Agda.Builtin.String
 open import Agda.Builtin.Bool
@@ -8,6 +7,7 @@ open import Relation.Nullary.Decidable.Core
 open import Agda.Builtin.Equality using (_≡_; refl)
 import Data.String.Properties as Str
 open import Data.Product using (_×_)
+open import Relation.Binary.PropositionalEquality using (_≡_; cong; cong₂)
 
 module Grammar where
   data α-f : Set where
@@ -63,15 +63,26 @@ module Grammar where
     var : kt-var-name → Path
     _∙_ : Path → kt-property-name → Path
 
-  -- TODO: remove and use ≡-?
-  _==_ : Path → Path → Bool
-  var (var-name x) == var (var-name y) = x Str.== y
-  var x == (p₂ ∙ x₁) = false
-  (p₁ ∙ f) == var x = false
-  (p₁ ∙ property-name x) == (p₂ ∙ property-name y) = (p₁ == p₂) ∧ (x Str.== y)
+  path-var-inj₁ : {x y : String} → var (var-name x) ≡ var (var-name y) → x ≡ y
+  path-var-inj₁ refl = refl
 
-  ≡-? : (p₁ p₂ : Path) → Dec (p₁ ≡ p₂)
-  ≡-? p₁ p₂ = {!   !} -- TODO
+  path-var-inj₂ : {x y : String} {p₁ p₂ : Path} → p₁ ∙ (property-name x) ≡ p₂ ∙ (property-name y) → x ≡ y
+  path-var-inj₂ refl = refl
+
+  path-var-inj₃ : {x y : String} {p₁ p₂ : Path} → p₁ ∙ (property-name x) ≡ p₂ ∙ (property-name y) → p₁ ≡ p₂
+  path-var-inj₃ refl = refl
+
+  _≡-?_ : (p₁ p₂ : Path) → Dec (p₁ ≡ p₂)
+  (var (var-name x)) ≡-? (var (var-name y)) with x Str.≟ y
+  ... | yes x≡y = yes (cong (λ z → var (var-name z)) x≡y)
+  ... | no ¬x≡y = no λ eq → ¬x≡y (path-var-inj₁ eq)
+  (p₁ ∙ f) ≡-? (var x) = no (λ ())
+  (var x) ≡-? (p₂ ∙ f) = no (λ ())
+  (p₁ ∙ property-name x) ≡-? (p₂ ∙ property-name y) with x Str.≟ y
+  ... | no ¬x≡y = no λ eq → ¬x≡y (path-var-inj₂ eq)
+  ... | yes x≡y with p₁ ≡-? p₂
+  ... | yes p₁≡p₂ = yes (cong₂ (λ z z₁ → z ∙ property-name z₁) p₁≡p₂ x≡y)
+  ... | no ¬p₁≡p₂ = no λ eq → ¬p₁≡p₂ (path-var-inj₃ eq)
 
   data exp : Set where
     null   : exp
@@ -92,3 +103,4 @@ module Grammar where
       δ-β : β
 
   Ctx = List δ
+ 

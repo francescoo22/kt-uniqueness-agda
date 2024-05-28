@@ -13,9 +13,9 @@ module SubPaths where
     ⊏-base : (p : Path) → (f : kt-property-name) → p ⊏ (p ∙ f)
     ⊏-rec : (p₁ p₂ : Path) → (f : kt-property-name) → p₁ ⊏ p₂ → p₁ ⊏ (p₂ ∙ f)
 
-  ⊏-? : (p₁ p₂ : Path) → Dec (p₁ ⊏ p₂)
-  ⊏-? p₁ (var x) = no λ ()
-  ⊏-? p₁ (p₂ ∙ f) with ⊏-? p₁ p₂
+  _⊏-?_ : (p₁ p₂ : Path) → Dec (p₁ ⊏ p₂)
+  p₁ ⊏-? (var x) = no λ ()
+  p₁ ⊏-? (p₂ ∙ f) with p₁ ⊏-? p₂
   ... | yes p₁⊏p₂ = yes (⊏-rec p₁ p₂ f p₁⊏p₂)
   ... | no p = {!  !} -- TODO
 
@@ -23,16 +23,16 @@ module SubPaths where
     less : {p₁ p₂ : Path} → p₁ ⊏ p₂ → p₁ ⊑ p₂
     equal : {p₁ p₂ : Path} → p₁ ≡ p₂ → p₁ ⊑ p₂
 
-  ⊑-? : (p₁ p₂ : Path) → Dec (p₁ ⊑ p₂)
-  ⊑-? p₁ p₂ with ≡-? p₁ p₂
+  _⊑-?_ : (p₁ p₂ : Path) → Dec (p₁ ⊑ p₂)
+  p₁ ⊑-? p₂ with p₁ ≡-? p₂
   ... | yes p₁≡p₂ = yes (equal p₁≡p₂) 
-  ... | no ¬p₁≡p₂ with ⊏-? p₁ p₂
+  ... | no ¬p₁≡p₂ with p₁ ⊏-? p₂
   ... | yes p₁⊏p₂ = yes (less p₁⊏p₂)
   ... | no ¬p₁⊏p₂ = no λ { (less p) → ¬p₁⊏p₂ p ; (equal q) → ¬p₁≡p₂ q }
 
   _⊖_ : Ctx → Path → Ctx
   [] ⊖ p = []
-  ((p' ∶ δ-α * δ-β) ∷ Δ) ⊖ p with ⊑-? p p'
+  ((p' ∶ δ-α * δ-β) ∷ Δ) ⊖ p with p ⊑-? p'
   ... | yes _ = Δ ⊖ p
   ... | no _ = (p' ∶ δ-α * δ-β) ∷ Δ ⊖ p
 
