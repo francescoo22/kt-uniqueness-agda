@@ -31,8 +31,8 @@ module Relations where
   ♭ ⊔-β ∘ = ♭
 
   -- NOTE: Here also a ⊤ ♭ may exists, but it should be ok
-  _⊔_ : αβ → αβ → αβ
-  (a , b) ⊔ (a₁ , b₁) = (a ⊔-α a₁) , (b ⊔-β b₁)
+  _⊔-αβ_ : αβ → αβ → αβ
+  (a , b) ⊔-αβ (a₁ , b₁) = (a ⊔-α a₁) , (b ⊔-β b₁)
 
   ⨆ : List⁺ αβ → αβ
   ⨆ (r ∷ []) = r
@@ -40,5 +40,5 @@ module Relations where
     where
     ⨆-aux : αβ → List αβ → αβ
     ⨆-aux r [] = r
-    ⨆-aux r (r₁ ∷ rs) = ⨆-aux (r ⊔ r₁) rs
+    ⨆-aux r (r₁ ∷ rs) = ⨆-aux (r ⊔-αβ r₁) rs
 

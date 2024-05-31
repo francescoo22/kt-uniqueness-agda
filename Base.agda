@@ -14,6 +14,8 @@ module Base where
              p ∉ Δ →
              p ∉ (d ∷ Δ)
 
+  postulate _∉-?_ : (p : Path) → (Δ : Ctx) → Dec (p ∉ Δ) -- TODO: prove it
+
   data valid-ctx : Ctx → Set where
     valid-ctx-base : valid-ctx []
     valid-ctx-rec  : {Δ : Ctx} {d : δ} →
@@ -32,13 +34,13 @@ module Base where
   _⟨_⟩ : Ctx → Path → αβ
   [] ⟨ var x ⟩ = ⊤ , ∘ -- Note: this case cannot happen in a well typed kt program, for now it is ok to leave it as it is
   [] ⟨ p ∙ f ⟩ = αf→α (default-annotation p f) , ∘
-  (record { δ-p = δ-p ; δ-α = δ-α ; δ-β = δ-β } ∷ Δ) ⟨ p ⟩ with p ≡-? δ-p
+  ((δ-p ∶ δ-α * δ-β) ∷ Δ) ⟨ p ⟩ with p ≡-? δ-p
   ... | yes _ = δ-α , δ-β
   ... | no _ = Δ ⟨ p ⟩
 
   _∖_ : Ctx → Path → Ctx
   [] ∖ p = []
-  (record { δ-p = δ-p ; δ-α = δ-α ; δ-β = δ-β } ∷ Δ) ∖ p with p ≡-? δ-p
+  ((δ-p ∶ δ-α * δ-β) ∷ Δ) ∖ p with p ≡-? δ-p
   ... | yes _ = Δ
-  ... | no _ = Δ ∖ p
+  ... | no _ = (δ-p ∶ δ-α * δ-β) ∷ Δ ∖ p
  
