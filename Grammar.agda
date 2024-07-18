@@ -96,9 +96,9 @@ module Grammar where
   data Stmt : Set where
     decl             : kt-var-name → Stmt
     _:=_             : (lh : Path) → (rh : exp) → Stmt
-    if_==_then_else_ : Path → Path → List Stmt → List Stmt → Stmt
+    if_==_then_else_ : Path → Path → Stmt → Stmt → Stmt
     callₛ            : kt-method-name → List Path → Stmt
-    seq              : List Stmt → Stmt
+    block            : List Stmt → Stmt
 
   record δ : Set where
     constructor _∶_*_

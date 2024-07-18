@@ -1,8 +1,10 @@
 open import Grammar
 open import SubPaths
 open import Paths
+open import Unification
 open import Agda.Builtin.List
 open import Agda.Builtin.Equality
+open import Data.Empty using (⊥)
 open import Data.List.Base using (_++_)
 open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_ ; _,_)
@@ -15,11 +17,11 @@ module StatementTyping (m-type : kt-method-name → (List (α-f × β)) × α-f)
   data _⊢_⊣_ : Ctx → Stmt → Ctx → Set where
     t-decl : (Δ : Ctx) → (x : kt-var-name) → Δ ⊢ decl x ⊣ ((var x ∶ ⊤ * ∘) ∷ Δ)
     
-    t-seq₁ : (Δ : Ctx) → Δ ⊢ seq [] ⊣ Δ
-    t-seq₂ : {Δ Δ₁ Δ' : Ctx} {stmt : Stmt} {stmts : List Stmt} →
+    t-block₁ : (Δ : Ctx) → Δ ⊢ block [] ⊣ Δ
+    t-block₂ : {Δ Δ₁ Δ' : Ctx} {stmt : Stmt} {stmts : List Stmt} →
              Δ ⊢ stmt ⊣ Δ₁ →
-             Δ₁ ⊢ seq stmts ⊣ Δ' →
-             Δ ⊢ seq (stmt ∷ stmts) ⊣ Δ'
+             Δ₁ ⊢ block stmts ⊣ Δ' →
+             Δ ⊢ block (stmt ∷ stmts) ⊣ Δ'
 
     t-assign-null : (Δ : Ctx) → (p : Path) →
                     Δ ⊢ p := null ⊣ (Δ [ p ↦ unique , ∘ ])
@@ -39,7 +41,12 @@ module StatementTyping (m-type : kt-method-name → (List (α-f × β)) × α-f)
                     Δ ⊢ callₛ m args ⊣ Δ' →
                     Δ ⊢ p := callₑ m args ⊣ (Δ' [ p ↦ αf→α (m-ret-type m) , ∘ ])
 
-    -- TODO: if after defining unification
+    t-if : {p₁ p₂ : Path} {s₁ s₂ : Stmt} {Δ Δ₁ Δ₂ : Ctx} →
+           (Δ ⟦ p₁ ⟧ ≡ (⊤ , ∘) → ⊥) →
+           (Δ ⟦ p₂ ⟧ ≡ (⊤ , ∘) → ⊥) →
+           Δ ⊢ s₁ ⊣ Δ₁ →
+           Δ ⊢ s₂ ⊣ Δ₂ →
+           Δ ⊢ if p₁ == p₂ then s₁ else s₂ ⊣ (unify Δ Δ₁ Δ₂)
     -- TODO: assign-borrowed-field after deciding how it works
     -- TODO: call, return, begin
-    
+      
